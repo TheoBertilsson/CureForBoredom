@@ -1,0 +1,421 @@
+@font-face {
+  font-family: Pixel;
+  src: url("PixelifySans-VariableFont_wght.ttf");
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Pixel, "Open sans", sans-serif;
+}
+/*  Index.HTML  */
+#bodyIndex {
+  background-image: url("boredom.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#headerIndex,
+#indexMain h2 {
+  background-color: whitesmoke;
+  width: 30em;
+  text-align: center;
+  border-radius: 25px;
+  border: 5px solid black;
+  padding: 10px;
+  margin-top: 5vh;
+}
+
+#btns {
+  display: flex;
+  justify-content: center;
+  justify-content: space-evenly;
+}
+a {
+  background-color: whitesmoke;
+  margin-right: 10px;
+  margin-top: 20px;
+  font-size: 30px;
+  padding: 10px;
+  border-radius: 25px;
+  border: 5px solid black;
+  text-decoration: none;
+  color: black;
+}
+a:hover {
+  background-color: grey;
+  color: whitesmoke;
+}
+
+/*  Jokes.HTML  */
+
+#jokesBody,
+#rpsBody,
+#bodyCities {
+  background-color: lightskyblue;
+  height: 100%;
+}
+#jokesHeader,
+#rpsHeader,
+#headerCities {
+  width: 100%;
+  height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2vh;
+}
+#jokesHeader h1,
+#rpsHeader h1,
+#headerCities h1,
+#headerBJ h1 {
+  text-align: center;
+  font-size: 10vh;
+}
+
+.homebtn {
+  margin: 5vh;
+}
+.homebtn img {
+  height: 30px;
+  width: 30px;
+}
+#jokesMain,
+#rpsMain {
+  display: flex;
+  justify-content: center;
+  border: 5px solid black;
+  border-radius: 25px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10vh;
+  padding: 5vh;
+  background-color: lightgray;
+}
+#conditionsJokes {
+  margin-right: 10vh;
+  font-size: 3vh;
+}
+span {
+  text-decoration: underline;
+}
+ul {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+li {
+  border: 3px solid black;
+  border-radius: 25px;
+  list-style-type: none;
+  padding: 1.5vh;
+  height: 100%;
+  width: 80%;
+  background-color: lightgray;
+  margin-bottom: 15px;
+}
+
+#typeJokes,
+#parts,
+#jokesAmount,
+#phrase {
+  margin: 2vh;
+  margin-bottom: 5vh;
+}
+#customBtns {
+  display: flex;
+  flex-direction: column;
+  border: 3px solid black;
+  width: 50%;
+  margin-top: 2vh;
+  padding: 5px;
+}
+#output {
+  width: 70vh;
+  height: 70vh;
+  background-color: whitesmoke;
+  border: 5px solid black;
+  border-radius: 25px;
+  text-align: center;
+  font-size: 3vh;
+  overflow: scroll;
+}
+#getJokeBtn,
+#resetBtn {
+  width: 15vh;
+  height: 10vh;
+  border-radius: 25px;
+  font-size: 2vh;
+}
+#resetBtn img {
+  width: 5vh;
+  height: 5vh;
+}
+#jokebtns {
+  display: flex;
+  justify-content: center;
+  justify-content: space-evenly;
+  margin-top: 3vh;
+}
+#jokesMain h2 {
+  font-size: 1.7rem;
+}
+#jokesMain span {
+  font-size: 1.2rem;
+}
+
+/*  RPS CSS   */
+#playerRPS img,
+#opponentRPS img {
+  width: 8em;
+  height: 10em;
+  margin-bottom: 0;
+  border-radius: 25px;
+  border: 5px solid black;
+  transition: all 1s ease;
+}
+#revealBtn {
+  font-size: 8vh;
+  text-align: center;
+  padding: 2vh;
+  margin: 6vh;
+}
+#playAgain {
+  font-size: 5vh;
+  margin: 1vh;
+  padding: 0.5vh;
+  text-align: center;
+}
+#winOrLoseSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#playerRPS img:hover,
+#opponentRPS img:hover,
+#resetBtnRps img:hover {
+  transform: scale(1.1);
+}
+#winOrLose {
+  text-align: center;
+  font-size: 8vh;
+  padding: 2.5vh;
+}
+#rpsMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+#winOrLoseSection p {
+  font-size: 5vh;
+}
+#resetBtnRps {
+  display: flex;
+  width: 10vh;
+  height: 10vh;
+  border-radius: 25px;
+}
+#resetBtnRps img {
+  width: 10vh;
+  height: 10vh;
+  margin-bottom: 0;
+  border-radius: 25px;
+  border: 5px solid black;
+  transition: all 1s ease;
+}
+
+
+
+/*  Cities CSS  */
+
+#mainCities h2 {
+  text-align: center;
+}
+#addShowremoveSection {
+  margin-right: 2em;
+  margin-left: 2em;
+}
+#outputCities {
+  margin-left: 2em;
+
+}
+#resetBtnCity img {
+  width: 5vh;
+  height: 5vh;
+}
+#resetBtnCity {
+  width: 10vh;
+  height: 10vh;
+  border-radius: 25px;
+  font-size: 2vh;
+  margin: 1px auto;
+}
+#outputCityDiv{
+  width: 70vh;
+  height: 70vh;
+  background-color: whitesmoke;
+  border: 5px solid black;
+  border-radius: 25px;
+  text-align: center;
+  font-size: 3vh;
+  overflow: scroll;
+}
+#mainCities div {
+  display: flex;
+  flex-direction: column;
+}
+#mainCities input,
+#mainCities button {
+  width: 20em;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  font-size: 1em;
+}
+#mainCities {
+  display: flex;
+  justify-content: space-between;
+  border: 5px solid black;
+  border-radius: 25px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10vh;
+  padding: 5vh;
+  background-color: lightgray;
+}
+
+/*  BJ HTML */
+#bodyBJ {
+  background-color: #800000;
+  height: 100%;
+}
+#mainBJ {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 5px solid black;
+  border-radius: 25px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10vh;
+  padding: 5vh;
+  background-color: lightgray;
+}
+#mainBJ img {
+  width: 8em;
+  height: 10em;
+  margin-bottom: 0;
+  border-radius: 25px;
+  border: 5px solid black;
+  transition: all 1s ease;
+}
+#headerBJ {
+  width: 100%;
+  height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2vh;
+}
+#headerBJ h1 {
+  background-color: lightgray;
+  border: 5px solid black;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 25px;
+}
+#dealer {
+  width: 90%;
+  height: 10em;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+#player {
+  width: 90%;
+  height: 15em;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+#deck {
+  width: 90%;
+  height: 10em;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: auto;
+}
+#dealBtn {
+  height: 4em;
+  width: 8em;
+  border: solid 5px black;
+  border-radius: 25px;
+  margin: 10%;
+}
+#controls {
+  width: 90%;
+  display: flex;
+  justify-content: space-evenly;
+  margin: auto;
+}
+#controls button {
+  font-size: 2em;
+  padding: 1em;
+  border: solid 5px black;
+  border-radius: 25px;
+}
+#drawBtn {
+  background-color: lightgreen;
+}
+#stayBtn {
+  background-color: crimson;
+}
+.playerCard {
+  margin-bottom: 2em;
+}
+#valueDealer {
+  margin-bottom: 1em;
+}
+#valuePlayer {
+  margin-top: 1em;
+}
+#valueDealer,
+#valuePlayer {
+  border: solid 5px black;
+  border-radius: 25px;
+  height: 3em;
+  width: 3em;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+#winOrLoseBJ {
+  font-size: 5em;
+}
+#divChart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 5px solid black;
+  border-radius: 25px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10vh;
+  padding: 5vh;
+  background-color: lightgray;
+}
+#dropDownArrow {
+  transform: rotate(-90deg);
+}

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlackJack</title>
+    <meta
+      name="description"
+      content="The website where you can spend your money "
+    />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body id="bodyBJ">
+    <header id="headerBJ">
+      <a href="index.html" class="homebtn"
+        ><img src="exit-2.png" alt="Person Exiting Door"
+      /></a>
+      <h1>The BlackJack!</h1>
+    </header>
+    <main id="mainBJ">
+      <div id="dealer"></div>
+      <div id="deck">
+        <h2 id="winOrLoseBJ">SPELA</h2>
+        <button id="dealBtn">DEAL</button>
+        <div id="deckAndValue">
+          <p id="valueDealer">0</p>
+          <img
+            src="https://deckofcardsapi.com/static/img/back.png"
+            alt="Checkerd back of card deck with blue color"
+            id="deckBJ"
+          />
+          <p id="valuePlayer">0</p>
+        </div>
+      </div>
+      <div id="player"></div>
+      <div id="controls">
+        <button id="drawBtn">Draw</button>
+        <button id="stayBtn">Stay</button>
+      </div>
+    </main>
+    <div id="divChart">
+      <img
+        width="25"
+        height="25"
+        src="https://img.icons8.com/ios-filled/50/give-way.png"
+        alt="Arrow for dropdow"
+        id="dropDownArrow"
+      />
+      <canvas id="chartJS"></canvas>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"
+    ></script>
+    <script>
+      let drawBtn = document.getElementById("drawBtn"),
+        stayBtn = document.getElementById("stayBtn"),
+        playerDiv = document.getElementById("player"),
+        dealBtn = document.getElementById("dealBtn"),
+        deck_ID = "",
+        cardValue,
+        cardSuit,
+        cardIMG,
+        dealerAceWorth11 = 0,
+        playerAceWorth11 = 0,
+        resultPlayer = 0,
+        resultDealer = 0,
+        valuePlayer = document.getElementById("valuePlayer"),
+        valueDealer = document.getElementById("valueDealer"),
+        dealerTurntIMG,
+        dealerTurntValue = 0,
+        totalCardValuePlayer = 0,
+        totalCardValueDealer = 0,
+        dealerDiv = document.getElementById("dealer"),
+        winOrLoseBJ = document.getElementById("winOrLoseBJ"),
+        turntCreateIMG,
+        dropDownArrow = document.getElementById("dropDownArrow"),
+        containsChart = document.getElementById("chartJS");
+
+      containsChart.style.display = "none";
+
+      //Chart values
+      let twos = 24,
+        threes = 24,
+        fours = 24,
+        fives = 24,
+        sixes = 24,
+        sevens = 24,
+        eights = 24,
+        nines = 24,
+        tens = 96,
+        aces = 24;
+
+      //    CHART
+      const data = {
+        labels: [
+          "Twos",
+          "Threes",
+          "Fours",
+          "Fives",
+          "Sixes",
+          "Sevens",
+          "EIghts",
+          "Nines",
+          "Tens",
+          "Aces",
+        ],
+        datasets: [
+          {
+            label: "Cards left",
+            data: [
+              twos,
+              threes,
+              fours,
+              fives,
+              sixes,
+              sevens,
+              eights,
+              nines,
+              tens,
+              aces,
+            ],
+            backgroundColor: [
+              "rgba(255, 26, 104, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+              "rgba(0, 0, 0, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255, 26, 104, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+              "rgba(0, 0, 0, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      // config
+      const config = {
+        type: "bar",
+        data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      };
+      const myChart = new Chart(document.getElementById("chartJS"), config);
+
+      winOrLoseBJ.style.display = "none";
+      drawBtn.style.display = "none";
+      stayBtn.style.display = "none";
+      function deal() {
+        dealBtn.style.display = "none";
+        winOrLoseBJ.style.display = "none";
+        while (playerDiv.firstChild) {
+          playerDiv.removeChild(playerDiv.firstChild);
+        }
+        while (dealerDiv.firstChild) {
+          dealerDiv.removeChild(dealerDiv.firstChild);
+        }
+        if (totalCardValuePlayer > 0) {
+          totalCardValuePlayer = 0;
+        }
+        if (totalCardValueDealer > 0) {
+          totalCardValueDealer = 0;
+        }
+        if (deck_ID != localStorage.getItem("deck_ID_Storage")) {
+          //Fetch new Deck
+          fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6")
+            .then((response) => response.json())
+            .then((result) => {
+              deck_ID = result.deck_id;
+              localStorage.setItem("deck_ID_Storage", result.deck_id);
+
+              //Fetch First Player Card
+              drawPlayerCard();
+              //Fetch First Dealer Card
+              drawDealerCard();
+              //Fetch Second Player Card
+              drawPlayerCard();
+              //Fetch Second Dealer Card
+              drawDealerCard();
+              // Activate Controls
+              drawBtn.style.display = "block";
+              stayBtn.style.display = "block";
+              drawBtn.addEventListener("click", drawPlayerCard);
+              stayBtn.addEventListener("click", playerChoseStay);
+            });
+        } else if (deck_ID === localStorage.getItem("deck_ID_Storage")) {
+          fetch(
+            "https://deckofcardsapi.com/api/deck/" +
+              deck_ID +
+              "/shuffle/?remaining=true"
+          )
+            .then((response) => response.json())
+            .then((result) => {
+              deck_ID = result.deck_id;
+
+              //Fetch First Player Card
+              drawPlayerCard();
+              //Fetch First Dealer Card
+              drawDealerCard();
+              //Fetch Second Player Card
+              drawPlayerCard();
+              //Fetch Second Dealer Card
+              drawDealerCard();
+              // Activate Controls
+              drawBtn.style.display = "block";
+              stayBtn.style.display = "block";
+              drawBtn.addEventListener("click", drawPlayerCard);
+              stayBtn.addEventListener("click", playerChoseStay);
+            });
+        }
+      }
+      function drawDealerCard() {
+        fetch(
+          "https://deckofcardsapi.com/api/deck/" + deck_ID + "/draw/?count=1"
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (totalCardValueDealer > 0 && dealerTurntValue === 0) {
+              dealerTurntIMG = result.cards[0].image;
+              turntCreateIMG = document.createElement("img");
+              turntCreateIMG.setAttribute(
+                "src",
+                "https://deckofcardsapi.com/static/img/back.png"
+              );
+              turntCreateIMG.setAttribute("alt", "picture of cardback");
+              turntCreateIMG.setAttribute("id", "turntDealerIMG");
+              dealerDiv.appendChild(turntCreateIMG);
+              dealerTurntValue = result.cards[0].value;
+              if (
+                dealerTurntValue === "KING" ||
+                dealerTurntValue === "QUEEN" ||
+                dealerTurntValue === "JACK"
+              ) {
+                dealerTurntValue = 10;
+              } else if (dealerTurntValue === "ACE") {
+                if (totalCardValueDealer > 10) {
+                  dealerTurntValue = 1;
+                } else if (
+                  totalCardValueDealer < 10 &&
+                  totalCardValueDealer + 11 < 22
+                ) {
+                  dealerTurntValue = 11;
+                  dealerAceWorth11 = 1;
+                }
+              }
+            } else if (totalCardValueDealer === 0) {
+              cardIMG = result.cards[0].image;
+              let createIMG = document.createElement("img");
+              createIMG.setAttribute("src", cardIMG);
+              createIMG.setAttribute("alt", "picture of card");
+              createIMG.setAttribute("class", "dealerCard");
+              dealerDiv.appendChild(createIMG);
+              cardValue = result.cards[0].value;
+              updateChart(cardValue);
+              if (
+                cardValue === "KING" ||
+                cardValue === "QUEEN" ||
+                cardValue === "JACK"
+              ) {
+                cardValue = 10;
+              } else if (cardValue === "ACE") {
+                if (totalCardValueDealer > 10) {
+                  cardValue = 1;
+                } else if (
+                  totalCardValueDealer < 11 &&
+                  totalCardValueDealer + 11 < 22
+                ) {
+                  cardValue = 11;
+                  dealerAceWorth11 = 1;
+                }
+              }
+              if (totalCardValueDealer > 0) {
+                totalCardValueDealer = totalCardValueDealer + +cardValue;
+                valueDealer.textContent = totalCardValueDealer;
+              } else if (totalCardValueDealer === 0) {
+                valueDealer.textContent = cardValue;
+                totalCardValueDealer = totalCardValueDealer + +cardValue;
+              }
+            }
+          });
+      }
+      function turnDealerCard() {
+        turntCreateIMG = document.createElement("img");
+        turntCreateIMG.setAttribute("src", dealerTurntIMG);
+        turntCreateIMG.setAttribute("alt", "picture of cardback");
+        dealerDiv.appendChild(turntCreateIMG);
+        let turntDealerIMGJS = document.getElementById("turntDealerIMG");
+        dealerDiv.removeChild(turntDealerIMGJS);
+        updateChart(dealerTurntValue);
+
+        totalCardValueDealer = totalCardValueDealer + +dealerTurntValue;
+        valueDealer.textContent = totalCardValueDealer;
+        dealerTurntValue = 0;
+      }
+      function drawPlayerCard() {
+        fetch(
+          "https://deckofcardsapi.com/api/deck/" + deck_ID + "/draw/?count=1"
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            cardIMG = result.cards[0].image;
+            let createIMG = document.createElement("img");
+            createIMG.setAttribute("src", cardIMG);
+            createIMG.setAttribute("alt", "picture of card");
+            createIMG.setAttribute("class", "playerCard");
+            playerDiv.appendChild(createIMG);
+            cardValue = result.cards[0].value;
+            updateChart(cardValue);
+            if (
+              cardValue === "KING" ||
+              cardValue === "QUEEN" ||
+              cardValue === "JACK"
+            ) {
+              cardValue = 10;
+            }
+            if (cardValue === "ACE") {
+              if (totalCardValuePlayer > 11) {
+                cardValue = 1;
+              } else if (
+                totalCardValuePlayer < 11 &&
+                totalCardValuePlayer + 11 < 22
+              ) {
+                cardValue = 11;
+                playerAceWorth11 = 1;
+              }
+            }
+            totalCardValuePlayer = totalCardValuePlayer + +cardValue;
+            valuePlayer.textContent = totalCardValuePlayer;
+            if (totalCardValuePlayer > 21) {
+              if (playerAceWorth11 === 1) {
+                totalCardValuePlayer = totalCardValuePlayer-- - 10;
+                valuePlayer.textContent = totalCardValuePlayer;
+              } else {
+                whoWinBJ();
+              }
+            }
+          });
+      }
+      function drawMoreDealerCard() {
+        fetch(
+          "https://deckofcardsapi.com/api/deck/" + deck_ID + "/draw/?count=1"
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            cardValue = result.cards[0].value;
+            cardIMG = result.cards[0].image;
+            let createIMG = document.createElement("img");
+            createIMG.setAttribute("src", cardIMG);
+            createIMG.setAttribute("alt", "picture of card");
+            createIMG.setAttribute("class", "dealerCard");
+            dealerDiv.appendChild(createIMG);
+            if (
+              cardValue === "KING" ||
+              cardValue === "QUEEN" ||
+              cardValue === "JACK"
+            ) {
+              cardValue = 10;
+            }
+            if (cardValue === "ACE") {
+              if (totalCardValueDealer > 10) {
+                cardValue = 1;
+              } else if (
+                totalCardValueDealer < 11 &&
+                totalCardValueDealer + 11 < 22
+              ) {
+                cardValue = 11;
+                dealerAceWorth11 = 1;
+              }
+            }
+            updateChart(cardValue);
+            totalCardValueDealer = totalCardValueDealer + +cardValue;
+            valueDealer.textContent = totalCardValueDealer;
+            if (totalCardValueDealer > 21) {
+              if (dealerAceWorth11 === 1) {
+                totalCardValueDealer = totalCardValueDealer - 10;
+                valueDealer.textContent = totalCardValueDealer;
+              } else {
+                winOrLoseBJ.textContent = " YOU WIN ";
+                winOrLoseBJ.style.color = "gold";
+                winOrLoseBJ.style.display = "block";
+
+                drawBtn.style.display = "none";
+                stayBtn.style.display = "none";
+                dealBtn.style.display = "block";
+              }
+            }
+            if (totalCardValueDealer < 17) {
+              drawMoreDealerCard();
+            }
+            if (totalCardValueDealer > 16 && totalCardValueDealer < 22) {
+              whoWinBJ();
+            }
+          });
+      }
+
+      function whoWinBJ() {
+        if (totalCardValuePlayer > 21) {
+          winOrLoseBJ.textContent = "BUST";
+          winOrLoseBJ.style.color = "red";
+          winOrLoseBJ.style.display = "block";
+
+          drawBtn.style.display = "none";
+          stayBtn.style.display = "none";
+          dealBtn.style.display = "block";
+        } else if (totalCardValuePlayer === 21) {
+          winOrLoseBJ.textContent = "BLACKJACK YOU WIN";
+          winOrLoseBJ.style.color = "GOLD";
+          winOrLoseBJ.style.display = "block";
+
+          drawBtn.style.display = "none";
+          stayBtn.style.display = "none";
+          dealBtn.style.display = "block";
+        } else if (totalCardValueDealer > totalCardValuePlayer) {
+          winOrLoseBJ.textContent = "Dealer WIN";
+          winOrLoseBJ.style.color = "red";
+          winOrLoseBJ.style.display = "block";
+
+          drawBtn.style.display = "none";
+          stayBtn.style.display = "none";
+          dealBtn.style.display = "block";
+        } else if (totalCardValueDealer < totalCardValuePlayer) {
+          winOrLoseBJ.textContent = "YOU WIN";
+          winOrLoseBJ.style.color = "gold";
+          winOrLoseBJ.style.display = "block";
+
+          drawBtn.style.display = "none";
+          stayBtn.style.display = "none";
+          dealBtn.style.display = "block";
+        } else if (totalCardValueDealer === totalCardValuePlayer) {
+          winOrLoseBJ.textContent = "PUSH";
+          winOrLoseBJ.style.color = "black";
+          winOrLoseBJ.style.display = "block";
+
+          drawBtn.style.display = "none";
+          stayBtn.style.display = "none";
+          dealBtn.style.display = "block";
+        }
+        totalCardValueDealer = 0;
+        totalCardValuePlayer = 0;
+        dealerAceWorth11 = 0;
+        playerAceWorth11 = 0;
+        dealerTurntValue = 0;
+      }
+
+      function playerChoseStay() {
+        let turnTheDealersCard = 1;
+        stayBtn.removeEventListener("click", playerChoseStay);
+        drawBtn.removeEventListener("click", drawPlayerCard);
+        if (turnTheDealersCard === 1) {
+          turnDealerCard();
+          turnTheDealersCard--;
+        }
+        if (totalCardValueDealer < 17) {
+          drawMoreDealerCard();
+        }
+        if (totalCardValueDealer > 16) {
+          whoWinBJ();
+        }
+      }
+
+      function updateChart(x) {
+        if (x === "2") {
+          twos--;
+          myChart.data.datasets[0].data[0] = twos;
+          myChart.update();
+        } else if (x === "3") {
+          threes--;
+          myChart.data.datasets[0].data[1] = threes;
+          myChart.update();
+        } else if (x === "4") {
+          fours--;
+          myChart.data.datasets[0].data[2] = fours;
+          myChart.update();
+        } else if (x === "5") {
+          fives--;
+          myChart.data.datasets[0].data[3] = fives;
+          myChart.update();
+        } else if (x === "6") {
+          sixes--;
+          myChart.data.datasets[0].data[4] = sixes;
+          myChart.update();
+        } else if (x === "7") {
+          sevens--;
+          myChart.data.datasets[0].data[5] = sevens;
+          myChart.update();
+        } else if (x === "8") {
+          eights--;
+          myChart.data.datasets[0].data[6] = eights;
+          myChart.update();
+        } else if (x === "9") {
+          nines--;
+          myChart.data.datasets[0].data[7] = nines;
+          myChart.update();
+        } else if (
+          x === "10" ||
+          x === "JACK" ||
+          x === "QUEEN" ||
+          x === "KING"
+        ) {
+          tens--;
+          myChart.data.datasets[0].data[8] = tens;
+          myChart.update();
+        } else if (x === "ACE") {
+          aces--;
+          myChart.data.datasets[0].data[9] = aces;
+          myChart.update();
+        }
+      }
+      function dropChart() {
+        containsChart.style.display = "block";
+        dropDownArrow.removeEventListener('click', dropChart)
+        dropDownArrow.style.transform = "rotate(0)"
+        dropDownArrow.addEventListener('click',retractChart)
+      }
+      function retractChart() {
+        containsChart.style.display = "none";
+        dropDownArrow.removeEventListener('click', retractChart)
+        dropDownArrow.style.transform = "rotate(-90deg)"
+        dropDownArrow.addEventListener('click',dropChart)
+      }
+      dealBtn.addEventListener("click", deal);
+      dropDownArrow.addEventListener("click", dropChart);
+    </script>
+  </body>
+</html>

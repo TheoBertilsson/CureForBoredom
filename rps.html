@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock, Paper or Scissors??</title>
+    <meta name="description" content="Play Rock, Paper and Scissors!" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body id="rpsBody">
+    <header id="rpsHeader">
+      <a href="index.html" class="homebtn"
+        ><img src="exit-2.png" alt="Person Exiting Door"
+      /></a>
+      <h1>Can you beat ME?!</h1>
+    </header>
+    <main id="rpsMain">
+      <div id="opponentRPS">
+        <img
+          src="CardBack.jpg"
+          alt="Checkerd back of card with blue color"
+          id="card1"
+        />
+        <img
+          src="CardBack.jpg"
+          alt="Checkerd back of card with blue color"
+          id="card2"
+        />
+        <img
+          src="CardBack.jpg"
+          alt="Checkerd back of card with blue color"
+          id="card3"
+        />
+        <img src="Rock.jpg" alt="Picture of rock" id="opponentRockPic" />
+        <img src="Paper.jpg" alt="Picture of Paper" id="opponentPaperPic" />
+        <img src="Sax.jpg" alt="Pictor of Scissors" id="opponentScissorPic" />
+      </div>
+      <div id="winOrLoseSection">
+        <p id="opponentScore">0</p>
+        <h2 id="winOrLose">CHOOSE YOUR CARD!</h2>
+        <button id="revealBtn">REVEAL</button>
+        <button id="playAgain">PLAY AGAIN!</button>
+        <p id="playerScore">0</p>
+      </div>
+      <div id="playerRPS">
+        <img src="Rock.jpg" alt="Picture of rock" id="rockPic" />
+        <img src="Paper.jpg" alt="Picture of Paper" id="paperPic" />
+        <img src="Sax.jpg" alt="Pictor of Scissors" id="scissorPic" />
+      </div>
+      <button id="resetBtnRps">
+        <img src="/reset.png" alt="Reset symbol" id="RPSReset" />
+      </button>
+    </main>
+    <script>
+      let rockBtn = document.getElementById("rockPic"),
+        paperBtn = document.getElementById("paperPic"),
+        scissorBtn = document.getElementById("scissorPic"),
+        opponentCard1 = document.getElementById("card1"),
+        opponentCard2 = document.getElementById("card2"),
+        opponentCard3 = document.getElementById("card3"),
+        opponentRockCard = document.getElementById("opponentRockPic"),
+        opponentPaperCard = document.getElementById("opponentPaperPic"),
+        opponentScissorsCard = document.getElementById("opponentScissorPic"),
+        revealBtn = document.getElementById("revealBtn"),
+        h2Text = document.getElementById("winOrLose"),
+        playAgainBtn = document.getElementById("playAgain"),
+        opponentScore = document.getElementById("opponentScore"),
+        playerScore = document.getElementById("playerScore"),
+        resetBtn = document.getElementById("resetBtnRps"),
+        oScore = 0,
+        pScore = 0,
+        rock,
+        paper,
+        scissor,
+        opponentRock,
+        opponentPaper,
+        opponentScissor;
+
+      opponentPaperCard.style.display = "none";
+      opponentRockCard.style.display = "none";
+      opponentScissorsCard.style.display = "none";
+      revealBtn.style.display = "none";
+      playAgainBtn.style.display = "none";
+
+      opponentScore.textContent = localStorage.getItem("opponentScoreStorage");
+      playerScore.textContent = localStorage.getItem("playerScoreStorage");
+
+      function playerChooseRock() {
+        rock = 1;
+        scissorBtn.style.display = "none";
+        paperBtn.style.display = "none";
+        rockBtn.removeEventListener("click", playerChooseRock);
+        rockPaperScissor();
+      }
+      function playerChoosePaper() {
+        paper = 1;
+        scissorBtn.style.display = "none";
+        rockBtn.style.display = "none";
+        paperBtn.removeEventListener("click", playerChoosePaper);
+        rockPaperScissor();
+      }
+      function playerChooseScissor() {
+        scissor = 1;
+        rockBtn.style.display = "none";
+        paperBtn.style.display = "none";
+        scissorBtn.removeEventListener("click", playerChooseScissor);
+        rockPaperScissor();
+      }
+      // Makes Opponents Choice, 1 = Rock, 2 = Paper, 3 = Scissor
+      function opponentRockPaperScissor() {
+        let x = Math.floor(Math.random() * 3 + 1);
+        opponentCard1.style.display = "none";
+        opponentCard3.style.display = "none";
+        return x;
+      }
+      function rockPaperScissor() {
+        opponentRockPaperScissor();
+        h2Text.style.display = "none";
+        revealBtn.style.display = "block";
+      }
+      function resetScore() {
+        localStorage.setItem("opponentScoreStorage", 0);
+        localStorage.setItem("playerScoreStorage", 0);
+        oScore = localStorage.getItem("opponentScoreStorage");
+        pScore = localStorage.getItem("playerScoreStorage");
+        opponentScore.textContent = oScore;
+        playerScore.textContent = pScore;
+      }
+      function resetGame() {
+        //TAkes away the stuff
+        playAgainBtn.style.display = "none";
+        opponentPaperCard.style.display = "none";
+        opponentRockCard.style.display = "none";
+        opponentScissorsCard.style.display = "none";
+
+        //Adds the starting stuff
+        opponentCard1.style.display = "inline";
+        opponentCard2.style.display = "inline";
+        opponentCard3.style.display = "inline";
+        rockBtn.style.display = "inline";
+        paperBtn.style.display = "inline";
+        scissorBtn.style.display = "inline";
+
+        //Remove Gold Border
+        rockBtn.style.border = "5px solid black";
+        paperBtn.style.border = "5px solid black";
+        scissorBtn.style.border = "5px solid black";
+        opponentPaperCard.style.border = "5px solid black";
+        opponentRockCard.style.border = "5px solid black";
+        opponentScissorsCard.style.border = "5px solid black";
+
+        // Changes Text
+        h2Text.textContent = "CHOOSE YOUR CARD!";
+
+        //Adds event listner again
+        rockBtn.addEventListener("click", playerChooseRock);
+        paperBtn.addEventListener("click", playerChoosePaper);
+        scissorBtn.addEventListener("click", playerChooseScissor);
+      }
+      function whoWon() {
+        let i = opponentRockPaperScissor();
+        if (rock === 1) {
+          if (i === 1) {
+            //  TIE (ROCK)
+            opponentCard2.style.display = "none";
+            opponentRockCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "TIE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+          } else if (i === 2) {
+            // Opponent Wins (PAPER)
+            opponentCard2.style.display = "none";
+            opponentPaperCard.style.display = "block";
+            opponentPaperCard.style.border = "5px solid gold";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU LOSE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            if (localStorage.getItem("opponentScoreStorage") > 0) {
+              oScore = localStorage.getItem("opponentScoreStorage");
+            }
+            oScore++;
+            opponentScore.textContent = oScore;
+            localStorage.setItem("opponentScoreStorage", oScore);
+          } else if (i === 3) {
+            // Player win! (Scissor)
+            opponentCard2.style.display = "none";
+            opponentScissorsCard.style.display = "block";
+            rockBtn.style.border = "5px solid gold";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU WIN!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            if (localStorage.getItem("playerScoreStorage") > 0) {
+              pScore = localStorage.getItem("playerScoreStorage");
+            }
+            pScore++;
+            playerScore.textContent = pScore;
+            localStorage.setItem("playerScoreStorage", pScore);
+          }
+        } else if (paper === 1) {
+          if (i === 1) {
+            //  Player Wins (ROCK)
+            opponentCard2.style.display = "none";
+            opponentRockCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU WIN!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            paperBtn.style.border = "5px solid gold";
+            if (localStorage.getItem("playerScoreStorage") > 0) {
+              pScore = localStorage.getItem("playerScoreStorage");
+            }
+            pScore++;
+            playerScore.textContent = pScore;
+            localStorage.setItem("playerScoreStorage", pScore);
+          } else if (i === 2) {
+            // TIE (PAPER)
+            opponentCard2.style.display = "none";
+            opponentPaperCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "TIE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+          } else if (i === 3) {
+            //  Opponent Wins (Scissor)
+            opponentCard2.style.display = "none";
+            opponentScissorsCard.style.display = "block";
+            opponentScissorsCard.style.border = "5px solid gold";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU LOSE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            if (localStorage.getItem("opponentScoreStorage") > 0) {
+              oScore = localStorage.getItem("opponentScoreStorage");
+            }
+            oScore++;
+            opponentScore.textContent = oScore;
+            localStorage.setItem("opponentScoreStorage", oScore);
+          }
+        } else if (scissor === 1) {
+          if (i === 1) {
+            //  Opponent Wins (ROCK)
+            opponentCard2.style.display = "none";
+            opponentRockCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU LOSE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            opponentRockCard.style.border = "5px solid gold";
+            if (localStorage.getItem("opponentScoreStorage") > 0) {
+              oScore = localStorage.getItem("opponentScoreStorage");
+            }
+            oScore++;
+            opponentScore.textContent = oScore;
+            localStorage.setItem("opponentScoreStorage", oScore);
+          } else if (i === 2) {
+            // Player Wins (PAPER)
+            opponentCard2.style.display = "none";
+            opponentPaperCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "YOU WIN!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+            scissorBtn.style.border = "5px solid gold";
+            if (localStorage.getItem("playerScoreStorage") > 0) {
+              pScore = localStorage.getItem("playerScoreStorage");
+            }
+            pScore++;
+            playerScore.textContent = pScore;
+            localStorage.setItem("playerScoreStorage", pScore);
+          } else if (i === 3) {
+            //  TIE (Scissor)
+            opponentCard2.style.display = "none";
+            opponentScissorsCard.style.display = "block";
+            revealBtn.style.display = "none";
+            h2Text.textContent = "TIE!";
+            h2Text.style.display = "block";
+            playAgainBtn.style.display = "block";
+          }
+        }
+        rock = 0;
+        scissor = 0;
+        paper = 0;
+      }
+
+      rockBtn.addEventListener("click", playerChooseRock);
+      paperBtn.addEventListener("click", playerChoosePaper);
+      scissorBtn.addEventListener("click", playerChooseScissor);
+      revealBtn.addEventListener("click", whoWon);
+      playAgainBtn.addEventListener("click", resetGame);
+      resetBtn.addEventListener("click", resetScore);
+    </script>
+  </body>
+</html>

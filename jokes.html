@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jokes</title>
+    <meta name="description" content="The website for the best jokes" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body id="jokesBody">
+    <header id="jokesHeader">
+      <a href="index.html" class="homebtn"
+        ><img src="exit-2.png" alt="Person Exiting Door"
+      /></a>
+      <h1>The Joke's on You!</h1>
+    </header>
+    <main id="jokesMain">
+      <section id="conditionsJokes">
+        <form action="jokes">
+          <div id="typeJokes">
+            <h2>What type of joke do you want to hear?</h2>
+            <span>Any: <input type="radio" name="jokeType" id="anyBtn" /></span>
+            <span
+              >Custom:<input type="radio" name="jokeType" id="customBtn" />
+            </span>
+            <div id="customBtns">
+              <span
+                >Programming:
+                <input
+                  type="checkbox"
+                  name="customType"
+                  id="pgmBtn"
+                  class="cstmbtns"
+              /></span>
+              <span
+                >Spoooooky:
+                <input
+                  type="checkbox"
+                  name="customType"
+                  id="scaryBtn"
+                  class="cstmbtns"
+              /></span>
+              <span
+                >Pun:
+                <input
+                  type="checkbox"
+                  name="customType"
+                  id="punBtn"
+                  class="cstmbtns"
+              /></span>
+              <span
+                >Christmas:
+                <input
+                  type="checkbox"
+                  name="customType"
+                  id="xmasBtn"
+                  class="cstmbtns"
+              /></span>
+            </div>
+          </div>
+          <div id="phrase">
+            <h2>Do you want any word included?</h2>
+            <input
+              type="text"
+              name="phrase"
+              placeholder="Word"
+              id="phraseInput"
+            />
+          </div>
+          <div id="parts">
+            <h2>Joke Type! &#40; Select atleast ONE &#41;</h2>
+            <span
+              >Single Part
+              <input type="checkbox" name="partType" id="singlePart"
+            /></span>
+            <span
+              >Two Part <input type="checkbox" name="partType" id="twoPart"
+            /></span>
+          </div>
+          <div id="jokesAmount">
+            <h2>How many jokes do you wanna hear?</h2>
+            <span
+              >Amount:
+              <input
+                type="number"
+                id="jokesAmountInput"
+                value="1"
+                min="1"
+                step="1"
+                oninput="reRender()"
+                max="10"
+            /></span>
+          </div>
+        </form>
+      </section>
+      <section id="outputJokes">
+        <div id="output">
+          <h2>Jokes</h2>
+          <ul></ul>
+        </div>
+        <div id="jokebtns">
+          <button id="getJokeBtn">Get Jokes</button>
+          <button id="resetBtn">
+            <img src="/reset.png" alt="Reset symbol" />
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      let anyButton = document.getElementById("anyBtn"),
+        customBtn = document.getElementById("customBtn"),
+        programmingBtn = document.getElementById("pgmBtn"),
+        spookyBtn = document.getElementById("scaryBtn"),
+        punBtn = document.getElementById("punBtn"),
+        xmasBtn = document.getElementById("xmasBtn"),
+        singleBtn = document.getElementById("singlePart"),
+        twoPartBtn = document.getElementById("twoPart"),
+        getJokeBtn = document.getElementById("getJokeBtn"),
+        resetBtn = document.getElementById("resetBtn"),
+        ul = document.querySelector("ul"),
+        linebreak = document.createElement("br"),
+        phraseForJoke,
+        urlCustomJoke,
+        userTypeChoice;
+
+      programmingBtn.disabled = true;
+      spookyBtn.disabled = true;
+      punBtn.disabled = true;
+      xmasBtn.disabled = true;
+
+      programmingBtn.checked = false;
+      spookyBtn.checked = false;
+      punBtn.checked = false;
+      xmasBtn.checked = false;
+
+      singleBtn.checked = true;
+      twoPartBtn.checked = true;
+      anyButton.checked = true;
+      function customBtnsFunction() {
+        if (customBtn.checked) {
+          //Activates custom type buttons
+          programmingBtn.disabled = false;
+          spookyBtn.disabled = false;
+          punBtn.disabled = false;
+          xmasBtn.disabled = false;
+        }
+      }
+      function resetJoke() {
+        while (ul.firstChild) {
+          ul.removeChild(ul.firstChild);
+        }
+      }
+      function part() {
+        if (singleBtn.checked === false && twoPartBtn.checked === false) {
+          document.getElementById("parts").style.color = "red";
+        }
+        if (singleBtn.checked === true || twoPartBtn.checked === true) {
+          document.getElementById("parts").style.color = "black";
+        }
+      }
+      function customBtnsDisableFunction() {
+        if (anyButton.checked) {
+          //Disables the custom type buttons adn unchecks them
+          programmingBtn.disabled = true;
+          spookyBtn.disabled = true;
+          punBtn.disabled = true;
+          xmasBtn.disabled = true;
+
+          programmingBtn.checked = false;
+          spookyBtn.checked = false;
+          punBtn.checked = false;
+          xmasBtn.checked = false;
+        }
+      }
+      function customURLFunction() {
+        let URLCustomnJokeValue = "";
+
+        // IF to add the custom joke Types to FETCH URL
+        if (programmingBtn.checked) {
+          URLCustomnJokeValue += "Programming";
+        }
+        if (spookyBtn.checked) {
+          if (URLCustomnJokeValue.length > 1) {
+            URLCustomnJokeValue += ",Spooky";
+          } else {
+            URLCustomnJokeValue += "Spooky";
+          }
+        }
+        if (xmasBtn.checked) {
+          if (URLCustomnJokeValue.length > 1) {
+            URLCustomnJokeValue += ",Christmas";
+          } else {
+            URLCustomnJokeValue += "Christmas";
+          }
+        }
+        if (punBtn.checked) {
+          if (URLCustomnJokeValue.length > 1) {
+            URLCustomnJokeValue += ",Pun";
+          } else {
+            URLCustomnJokeValue += "Pun";
+          }
+        }
+        return URLCustomnJokeValue;
+      }
+      function anyBtnIsCheckedWithPhrase(phraseForJoke, amountOfJokes) {
+        fetch(
+          "https://v2.jokeapi.dev/joke/Any?safe-mode&contains=" +
+            phraseForJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function customBtnIsCheckedWithPhrase(
+        urlCustomJoke,
+        phraseForJoke,
+        amountOfJokes
+      ) {
+        //Fetch Custom Jokes based on URL
+        fetch(
+          "https://v2.jokeapi.dev/joke/" +
+            urlCustomJoke +
+            "?safe-mode&contains=" +
+            phraseForJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function anyBtnIsCheckedWithBothTypes(amountOfJokes) {
+        fetch(
+          "https://v2.jokeapi.dev/joke/Any?safe-mode&amount=" + amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function customBtnIsCheckedWithBothTypes(urlCustomJoke, amountOfJokes) {
+        //Fetch Custom Jokes based on URL
+        fetch(
+          "https://v2.jokeapi.dev/joke/" +
+            urlCustomJoke +
+            "?safe-mode&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function anyBtnIsCheckedWithOneType(typeOfJoke, amountOfJokes) {
+        fetch(
+          "https://v2.jokeapi.dev/joke/Any?safe-mode&" +
+            typeOfJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function anyBtnIsCheckedWithPhraseAndType(
+        phraseForJoke,
+        typeOfJoke,
+        amountOfJokes
+      ) {
+        fetch(
+          "https://v2.jokeapi.dev/joke/Any?" +
+            typeOfJoke +
+            "&safe-mode&contains=" +
+            phraseForJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function customBtnIsCheckedWithPhraseAndType(
+        urlCustomJoke,
+        phraseForJoke,
+        typeOfJoke,
+        amountOfJokes
+      ) {
+        //Fetch Custom Jokes based on URL
+        fetch(
+          "https://v2.jokeapi.dev/joke/" +
+            urlCustomJoke +
+            "?safe-mode&" +
+            typeOfJoke +
+            "&contains=" +
+            phraseForJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function customBtnIsCheckedWithAType(
+        urlCustomJoke,
+        typeOfJoke,
+        amountOfJokes
+      ) {
+        fetch(
+          "https://v2.jokeapi.dev/joke/" +
+            urlCustomJoke +
+            "?safe-mode&" +
+            typeOfJoke +
+            "&amount=" +
+            amountOfJokes
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            let i = 0;
+            if (amountOfJokes > 1) {
+              while (i < result.jokes.length) {
+                let typeJoke = result.jokes[i].type;
+                errorMessage = result.jokes[i].error;
+                //Checks if it is Single or Two Part
+                if (typeJoke === "single") {
+                  let joke = result.jokes[i].joke,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (typeJoke === "twopart") {
+                  let delivery = result.jokes[i].delivery,
+                    setup = result.jokes[i].setup,
+                    joke = setup + " " + delivery,
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                } else if (errorMessage === true) {
+                  let joke = "Error, No joke meets this Qriteria",
+                    li = document.createElement("li");
+                  li.appendChild(document.createTextNode(joke));
+                  ul.appendChild(li);
+                }
+                i++;
+              }
+            } else {
+              let typeJoke = result.type;
+              //Checks if it is Single or Two Part
+              if (typeJoke === "single") {
+                let joke = result.joke,
+                  errorMessage = result.error;
+                li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (typeJoke === "twopart") {
+                let delivery = result.delivery,
+                  setup = result.setup,
+                  joke = setup + " " + delivery,
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              } else if (errorMessage === true) {
+                let joke = "Error, No joke meets this Qriteria",
+                  li = document.createElement("li");
+                li.appendChild(document.createTextNode(joke));
+                ul.appendChild(li);
+              }
+            }
+          });
+      }
+      function checkTypeOfJokeUserChose() {
+        // Checks if user only wants Single, Two line or both
+        if (singleBtn.checked === true && twoPartBtn.checked === true) {
+          userTypeChoice = "both";
+        } else if (singleBtn.checked === false && twoPartBtn.checked === true) {
+          userTypeChoice = "type=twopart";
+        } else if (singleBtn.checked === true && twoPartBtn.checked === false) {
+          userTypeChoice = "type=single";
+        }
+        return userTypeChoice;
+      }
+
+      function getJoke() {
+        let amountOfJokes = document.getElementById("jokesAmountInput").value,
+          i = 0;
+        phraseForJoke = document.getElementById("phraseInput").value;
+        userTypeChoice = checkTypeOfJokeUserChose();
+        if (amountOfJokes > 10) {
+          document.getElementById("jokesAmount").style.color = "red";
+        } else {
+          document.getElementById("jokesAmount").style.color = "black";
+        }
+        if (amountOfJokes > i && amountOfJokes < 11) {
+          // USER PUT IN PHRASE
+          if (phraseForJoke.length > 0 && userTypeChoice != undefined) {
+            //Checks if User request Single, Two or both liners
+            if (userTypeChoice === "both") {
+              // User has chosen Any joke
+              if (anyButton.checked) {
+                anyBtnIsCheckedWithPhrase(phraseForJoke, amountOfJokes);
+              }
+              // User has chosen custom joke
+              else if (customBtn.checked) {
+                urlCustomJoke = customURLFunction();
+                customBtnIsCheckedWithPhrase(
+                  urlCustomJoke,
+                  phraseForJoke,
+                  amountOfJokes
+                );
+              }
+            }
+
+            //User has chosen a Type
+            else if (userTypeChoice.length > 4) {
+              // User has chosen Any joke
+              if (anyButton.checked) {
+                anyBtnIsCheckedWithPhraseAndType(
+                  phraseForJoke,
+                  userTypeChoice,
+                  amountOfJokes
+                );
+              }
+              // User has chosen custom joke
+              else if (customBtn.checked) {
+                urlCustomJoke = customURLFunction();
+                customBtnIsCheckedWithPhraseAndType(
+                  urlCustomJoke,
+                  phraseForJoke,
+                  userTypeChoice,
+                  amountOfJokes
+                );
+              }
+            }
+          }
+
+          //USER ADDED NO PHRASE
+          if (phraseForJoke.length === 0 && userTypeChoice != undefined) {
+            //Checks if User request Single, Two or both liners
+            if (userTypeChoice === "both") {
+              // User has chosen Any joke
+              if (anyButton.checked) {
+                anyBtnIsCheckedWithBothTypes(amountOfJokes);
+              }
+              // User has chosen custom joke
+              else if (customBtn.checked) {
+                urlCustomJoke = customURLFunction();
+                customBtnIsCheckedWithBothTypes(urlCustomJoke, amountOfJokes);
+              }
+            }
+
+            //User has chosen a Type
+            else if (userTypeChoice != "both" && phraseForJoke === 0) {
+              // User has chosen Any joke
+              if (anyButton.checked) {
+                anyBtnIsCheckedWithOneType(userTypeChoice, amountOfJokes);
+              }
+              // User has chosen custom joke
+              else if (customBtn.checked) {
+                urlCustomJoke = customURLFunction();
+                customBtnIsCheckedWithAType(
+                  urlCustomJoke,
+                  userTypeChoice,
+                  amountOfJokes
+                );
+              }
+            }
+          }
+          i++;
+        }
+      }
+
+      anyButton.addEventListener("click", customBtnsDisableFunction);
+      customBtn.addEventListener("click", customBtnsFunction);
+      getJokeBtn.addEventListener("click", getJoke);
+      singleBtn.addEventListener("click", part);
+      twoPartBtn.addEventListener("click", part);
+      resetBtn.addEventListener("click", resetJoke);
+    </script>
+  </body>
+</html>
